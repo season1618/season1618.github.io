@@ -1,0 +1,39 @@
+body {
+    width: 60%;
+    margin: 0 auto;
+    font-family: Courier, monospace;
+    background: linear-gradient(
+        45deg,
+        rgb(197, 209, 154) 0%,
+        #9bc98d 15%,
+        #95d3a8 35%,
+        #96b0c0 52%,
+        #9788aa 71%,
+        #7e81a7 87%,
+        #60637e 100%
+    );
+}
+h1, h2 {
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+a {
+    color: black;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+a:hover {
+    color: white;
+    background-color: rgb(53, 172, 49);
+    text-decoration: none;
+}
+details {
+    font-size: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+details > summary {
+    font-size: 20px;
+    font-weight: bold;
+}
