@@ -1,9 +1,9 @@
 function setup() {
-    createCanvas(850, windowHeight*2/3, WEBGL).parent("canvas");
+    createCanvas(500, 400, WEBGL).parent("canvas");
 }
 
 function draw() {
-    background(50);
+    background(0);
     stroke(0.1);
 
     rotateY(- frameCount / 30);

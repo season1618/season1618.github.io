@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>origami</title>
+</head>
+<body>
+    <style>
+        body {
+            margin: 0 auto;
+        }
+        h1 {
+            width: max-content;
+            margin-left: auto;
+            margin-right: auto;
+            font-family: Courier, monospace;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: min-content;
+            margin: 0 auto;
+        }
+        img {
+            width: 500px;
+        }
+    </style>
+
+    <h1>origami</h1>
+
+    <div class="grid">
+        <a href="./origami/torus/folded.jpg"><img src="./origami/torus/folded.jpg"></a>
+        <a href="./origami/torus/unfolded.jpg"><img src="./origami/torus/unfolded.jpg"></a>
+        <a href="./origami/torus/folded-2.jpg"><img src="./origami/torus/folded-2.jpg"></a>
+        <div id="canvas">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.js"></script>
+            <script src="./src/torus.js"></script>
+        </div>
+        <a href="./origami/octahedron/folded.jpg"><img src="./origami/octahedron/folded.jpg"></a>
+        <a href="./origami/octahedron/unfolded.png"><img src="./origami/octahedron/unfolded.png"></a>
+        <a href="./origami/hexahedron/folded.jpg"><img src="./origami/hexahedron/folded.jpg"></a>
+        <a href="./origami/hexahedron/unfolded.jpg"><img src="./origami/hexahedron/unfolded.jpg"></a>
+        <a href="./origami/truncated-octahedron/folded.jpg"><img src="./origami/truncated-octahedron/folded.jpg"></a>
+        <a href="./origami/truncated-octahedron/folded-2.jpg"><img src="./origami/truncated-octahedron/folded-2.jpg"></a>
+        <a href="./origami/truncated-octahedron/unfolded.jpg"><img src="./origami/truncated-octahedron/unfolded.jpg"></a>
+        <a href="./origami/cubeoctahedron/folded.jpg"><img src="./origami/cubeoctahedron/folded.jpg"></a>
+        <a href="./origami/cubeoctahedron/folded-2.jpg"><img src="./origami/cubeoctahedron/folded-2.jpg"></a>
+        <a href="./origami/cubeoctahedron/unfolded.jpg"><img src="./origami/cubeoctahedron/unfolded.jpg"></a>
+    </div>
+</body>
+</html>
