@@ -1,0 +1,26 @@
+html {
+    height: 100%;
+}
+
+body {
+    width: 60%;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+h1 {
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 55px;
+    font-family: 'Courier New', Courier, "游明朝", monospace;
+}
+
+a {
+    color: black;
+}
+
+a:hover {
+    color:blue;
+    text-decoration: none;
+}

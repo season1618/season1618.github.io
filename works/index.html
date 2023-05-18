@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../index.css">
+    <style>
+        h2 {
+            font-family: Segoe UI Semibold, Meiryo, Yu Gothic;
+        }
+        .link {
+            width: 512px;
+            margin: 10px auto;
+
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .link > a {
+            display: flex;
+            text-decoration: none;
+        }
+        a:hover {
+            color: black;
+        }
+        .link > a > div {
+            box-sizing: border-box;
+            background-color: rgb(210, 210, 210);
+            width: 256px;
+            height: 192px;
+            padding: 10px 20px;
+        }
+        .link > a > img {
+            object-fit: cover;
+            width: 256px;
+            height: 192px;
+        }
+        
+    </style>
+    <title>season</title>
+</head>
+<body>
+    <h1>WORKS</h1>
+
+    <div class="link">
+        <a href="https://github.com/season1618/c-compiler">
+            <div>
+                <h2>Cコンパイラ</h2>
+                <p>C言語によるセルフホスト可能なCコンパイラ</p>
+            </div>
+            <img src="./images/c-compiler.png">
+        </a>
+    </div>
+
+    <div class="link">
+        <a href="https://season1618.github.io/PentagonScript/">
+            <div>
+                <h2>PentagonScript</h2>
+                <p>コンパスと三角定規による作図の手順を記述する言語</p>
+            </div>
+            <img src="https://season1618.github.io/PentagonScript/public/icon.png">
+        </a>
+    </div>
+
+    <div class="link">
+        <a href="https://github.com/season1618/md_note">
+            <div>
+                <h2>MD Note</h2>
+                <p>MarkdownをHTMLに変換</p>
+            </div>
+            <img src="./images/md_note.png">
+        </a>
+    </div>
+
+    <div class="link">
+        <a href="https://season1618.github.io/syntax-viewer/">
+            <div>
+                <h2>Syntax Viewer</h2>
+                <p>Lispの抽象構文木を表示</p>
+            </div>
+            <img src="https://season1618.github.io/syntax-viewer/icon.png">
+        </a>
+    </div>
+</body>

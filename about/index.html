@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../index.css">
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow-y: hidden;
+        }
+        #bg {
+            position: absolute;
+            opacity: 0.5;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+        #body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+        }
+        #content {
+            width: 60%;
+            margin: 0 auto;
+            padding-bottom: 20px;
+        }
+
+        #flex {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        #flex > a {
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+    </style>
+    <title>season</title>
+</head>
+<body>
+    <canvas id="bg"></canvas>
+    <div id="body">
+        <div id="content">
+            <h1>ABOUT</h1>
+
+            <h2>Profile</h2>
+            <ul>
+                <li>2021.4- 東京工業大学情報理工学院情報工学系</li>
+            </ul>
+
+            <h2>Interests</h2>
+            <ul>
+                <li>数学: 微分幾何</li>
+                <li>物理: 一般相対論</li>
+                <li>情報工学: 言語処理系，アーキテクチャ</li>
+                <li>折り紙</li>
+            </ul>
+
+            <h2>Skills</h2>
+            <ul>
+                <li>競技プログラミング
+                    <ul>
+                        <li>AtCoder水</li>
+                        <li>PCK, JOIなど</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>Languages</h2>
+            <ul>
+                <li>C/C++</li>
+                <li>Java</li>
+            </ul>
+
+            <h2>Links</h2>
+            <ul>
+                <li>GitHub: <a href="https://github.com/season1618">season1618</a></li>
+                <li>Twitter: 数物<a href="https://twitter.com/season07001674">@season07001674</a> / 情報<a href="https://twitter.com/season1618">@season1618</a></li>
+                <li>Blog: <a href="https://season1618.hatenablog.jp/about">season's quarterly</li>
+            </ul>
+
+            <div id="flex">
+                <a href="https://twitter.com/season1618"><img src="./images/twitter-logo.svg" height="32px"></a>
+                <a href="https://github.com/season1618"><img src="./images/github-mark.png" height="32px"></a>
+                <a href="https://season1618.hatenablog.jp/about"><img src="./images/iconmonstr-pen-14.svg" height="32px"></a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../shaders/sphere.js"></script>
+</body>
+</html>
