@@ -10,6 +10,27 @@ body {
     font-family: 'Yu Mincho';
 }
 
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border-bottom: 1px solid rgb(198, 198, 198);
+
+    padding: 10px 20px;
+    font-family: 'Consolas';
+}
+
+header > a {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 20px;
+    text-decoration: none;
+}
+
 h1 {
     width: max-content;
     margin-left: auto;
