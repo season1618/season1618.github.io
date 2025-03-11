@@ -10,19 +10,66 @@
     <link rel="icon" href="./favicon.ico"/>
     <link rel="stylesheet" href="./index.css">
     <style>
-        h2 {
-            width: max-content;
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 34px;
+        #content {
+            width: 60%;
+            margin: 0 auto;
+            padding-bottom: 20px;
+        }
+        #flex {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        #flex > a {
+            margin-left: 20px;
+            margin-right: 20px;
         }
     </style>
     <title>season</title>
 </head>
 <body>
-    <h1>SEASON</h1>
+    <div id="content">
+        <h1>About</h1>
+        <p>数学と物理学と計算機科学。言語処理系、OS、計算材料科学に興味があります。</p>
 
-    <a href="./about/"><h2>About</h2></a>
-    <a href="./works/"><h2>Works</h2></a>
+        <h2>経歴</h2>
+        <ul>
+            <li>2021.4- 東京工業大学情報理工学院情報工学系</li>
+        </ul>
+
+        <h2>趣味</h2>
+        <ul>
+            <li>折り紙</li>
+            <li>読書</li>
+            <li>アニメ</li>
+            <li>競技プログラミング(現在はやってない)
+                <ul>
+                    <li>AtCoder水</li>
+                    <li>PCK, JOIなど</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>言語</h2>
+        <ul>
+            <li>C/C++</li>
+            <li>Rust</li>
+            <li>Haskell</li>
+            <li>Java</li>
+        </ul>
+
+        <h2>リンク</h2>
+        <ul>
+            <li>GitHub: <a href="https://github.com/season1618">season1618</a></li>
+            <li>Twitter: 数物<a href="https://twitter.com/season07001674">@season07001674</a> / 情報<a href="https://twitter.com/season1618">@season1618</a></li>
+            <li>Blog: <a href="https://season1618.hatenablog.jp/about">season's quarterly</li>
+        </ul>
+
+        <div id="flex">
+            <a href="https://twitter.com/season1618"><img src="./image/twitter-logo.svg" height="32px"></a>
+            <a href="https://github.com/season1618"><img src="./image/github-mark.png" height="32px"></a>
+            <a href="https://season1618.hatenablog.jp/about"><img src="./image/iconmonstr-pen-14.svg" height="32px"></a>
+        </div>
+    </div>
 </body>
 </html>
