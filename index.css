@@ -3,9 +3,10 @@ html {
 }
 
 body {
-    width: 60%;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
     padding-bottom: 20px;
+    overflow-y: scroll;
     font-family: 'Yu Mincho';
 }
 
