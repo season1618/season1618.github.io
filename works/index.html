@@ -5,30 +5,36 @@
     <link rel="stylesheet" href="../index.css">
     <style>
         .link {
-            width: 512px;
+            height: 128px;
+            width: 60%;
             margin: 10px auto;
+            box-sizing: border-box;
+            border: thin solid rgb(205, 205, 205);
 
-            border-radius: 10px;
             overflow: hidden;
         }
         .link > a {
             display: flex;
             text-decoration: none;
         }
-        a:hover {
+        .link > a:hover {
             color: black;
         }
         .link > a > div {
+            background-color: rgb(239, 239, 239);
             box-sizing: border-box;
-            background-color: rgb(210, 210, 210);
-            width: 256px;
-            height: 192px;
+            width: 100%;
             padding: 10px 20px;
+        }
+        .link > a > div > h3 {
+            margin: 0;
+        }
+        .link > a > div > p {
+            margin: 0;
         }
         .link > a > img {
             object-fit: cover;
-            width: 256px;
-            height: 192px;
+            width: 192px;
         }
     </style>
     <title>season</title>
@@ -38,45 +44,45 @@
         <a href="../">About</a> <a href="./">Work</a>
     </header>
 
-    <h1>Works</h1>
+    <h1>Work</h1>
 
     <div class="link">
         <a href="https://github.com/season1618/c-compiler">
+            <img src="./images/c-compiler.png">
             <div>
-                <h2>Cコンパイラ</h2>
+                <h3>Cコンパイラ</h3>
                 <p>C言語によるセルフホスト可能なCコンパイラ</p>
             </div>
-            <img src="./images/c-compiler.png">
         </a>
     </div>
 
     <div class="link">
         <a href="https://season1618.github.io/PentagonScript/">
+            <img src="https://season1618.github.io/PentagonScript/public/icon.png">
             <div>
-                <h2>PentagonScript</h2>
+                <h3>PentagonScript</h3>
                 <p>コンパスと三角定規による作図の手順を記述する言語</p>
             </div>
-            <img src="https://season1618.github.io/PentagonScript/public/icon.png">
         </a>
     </div>
 
     <div class="link">
         <a href="https://github.com/season1618/md_note">
+            <img src="./images/md_note.png">
             <div>
-                <h2>MD Note</h2>
+                <h3>MD Note</h3>
                 <p>MarkdownをHTMLに変換</p>
             </div>
-            <img src="./images/md_note.png">
         </a>
     </div>
 
     <div class="link">
         <a href="https://season1618.github.io/syntax-viewer/">
+            <img src="https://season1618.github.io/syntax-viewer/icon.png">
             <div>
-                <h2>Syntax Viewer</h2>
+                <h3>Syntax Viewer</h3>
                 <p>Lispの抽象構文木を表示</p>
             </div>
-            <img src="https://season1618.github.io/syntax-viewer/icon.png">
         </a>
     </div>
 </body>
