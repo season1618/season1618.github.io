@@ -10,6 +10,23 @@
     <link rel="icon" href="./favicon.ico"/>
     <link rel="stylesheet" href="./index.css">
     <style>
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border-bottom: 1px solid rgb(198, 198, 198);
+            padding: 10px 20px;
+        }
+        header > a {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            font-size: 20px;
+            text-decoration: none;
+        }
         #content {
             width: 60%;
             margin: 0 auto;
@@ -28,6 +45,10 @@
     <title>season</title>
 </head>
 <body>
+    <header>
+        <a href="./">About</a> <a href="./works/">Work</a>
+    </header>
+
     <div id="content">
         <h1>About</h1>
         <p>数学と物理学と計算機科学。言語処理系、OS、計算材料科学に興味があります。</p>
@@ -66,9 +87,9 @@
         </ul>
 
         <div id="flex">
-            <a href="https://twitter.com/season1618"><img src="./image/twitter-logo.svg" height="32px"></a>
-            <a href="https://github.com/season1618"><img src="./image/github-mark.png" height="32px"></a>
-            <a href="https://season1618.hatenablog.jp/about"><img src="./image/iconmonstr-pen-14.svg" height="32px"></a>
+            <a href="https://github.com/season1618"><img src="./image/github-mark.png" height="18px"></a>
+            <a href="https://twitter.com/season1618"><img src="./image/twitter-logo.svg" height="16px"></a>
+            <a href="https://season1618.hatenablog.jp/about"><img src="./image/iconmonstr-pen-14.svg" height="18px"></a>
         </div>
     </div>
 </body>
