@@ -30,6 +30,12 @@ header > a {
     text-decoration: none;
 }
 
+#content {
+    width: 60%;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
 h1 {
     width: max-content;
     margin-left: auto;
