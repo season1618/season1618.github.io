@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <head prefix="og: http://ogp.me/ns#">
+    <meta property="og:url" content="https://season1618.github.io/"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="アルキメデスの原理の数学的証明 - season1618"/>
+    <meta property="og:image" content="https://season1618.github.io/icon.png"/>
+    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="./blog.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>アルキメデスの原理の数学的証明 - season1618</title>
+</head>
+<body>
+    <header>
+        <a href="../">About</a> <a href="../work">Work</a> <a href="../blog">Blog</a>
+    </header>
+    <div id="content">
+        <p style="text-align: right;">更新 2025.03.31</p>
+        
+        <h1 id="アルキメデスの原理の数学的証明">アルキメデスの原理の数学的証明</h1>
+        <p>一般的には物理的な考察によって証明する。物体が流体に浸かっている領域をその流体で置き換えれば、その領域にかかる重力と浮力が釣り合っているはずだ。したがって、流体中の物体はその物体が押しのけている流体の重さと同じだけの浮力を受ける。</p>
+        <p>別のアプローチとして、物体にかかる圧力の合計を計算することでも浮力を求められるはずである。昔読んだ物理の教科書では水平な直方体の上面と下面の圧力差を計算することで確認していたのだが、任意の形状で成り立つことの証明までは書いていないのだった。今まで見たことがなかったので証明を考えてみた。</p>
+        <p>水面から鉛直下向きに\(z\)軸を取る。パスカルの原理より、水深\(z\)では面の法線方向に圧力\(\rho gz\)が働く。\(dS\)を大きさが表面積、向きが外向き法線方向のベクトルとすると、領域\(V\)にかかる圧力の合計は</p>
+        <p>\[
+F = - \int_{\partial V} \rho gz\ dS
+\]</p>
+        <p>と表せる。ベクトル解析の公式(証明は後述)を用いて体積分に変換すると</p>
+        <p>\[
+\begin{aligned}
+F   &= - \int_V \mathrm{grad}(\rho gz)\ dV\\
+    &= - \int_V (0, 0, \rho g)\ dV\\
+    &= - (0, 0, \rho Vg)
+\end{aligned}
+\]</p>
+        <p>となる。すなわち鉛直上向きに\(\rho Vg\)の浮力が発生する。</p>
+        <p>上で用いたベクトル解析の公式は、スカラー場\(f\)に対して</p>
+        <p>\[
+\int_V \mathrm{grad} f\ dV = \int_{\partial V} f\ dS
+\]</p>
+        <p>が成り立つというものだ。証明は、ガウスの発散定理</p>
+        <p>\[
+\int_V \mathrm{div} F\ dV = \int_{\partial V} F \cdot dS
+\]</p>
+        <p>で、任意の定ベクトル\(e\)によって\(F = fe\)とすれば直ちに従う。</p>
+        <p>この公式は一般の微分形式に対するストークスの定理とは異なり、特に名前は付いていないようだ。一見いかにも物理で登場しそうな公式なのに今まで知らなかったので驚いた。しかし良く考えてみるとスカラー場を面積分する(単に積分するのではなく、単位法線ベクトルを掛けて積分する)というのは物理的に少し特殊な感じがする。今回の場合はパスカルの原理が効いて圧力が等方的にかかるから上のような計算になる。</p>
+
+    </div>
+</body>
+</html>

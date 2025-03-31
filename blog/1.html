@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <head prefix="og: http://ogp.me/ns#">
+    <meta property="og:url" content="https://season1618.github.io/"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="ブログ緒言 - season1618"/>
+    <meta property="og:image" content="https://season1618.github.io/icon.png"/>
+    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="./blog.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>ブログ緒言 - season1618</title>
+</head>
+<body>
+    <header>
+        <a href="../">About</a> <a href="../work">Work</a> <a href="../blog">Blog</a>
+    </header>
+    <div id="content">
+        <p style="text-align: right;">更新 2025.03.31</p>
+        
+        <h1 id="ブログ緒言">ブログ緒言</h1>
+        <p>ブログは高校の時からはてなブログを使っていたのだが、はてなの数式記法にはうんざりしていたしスタイルにも不満があった。かといってQiitaやZennなんかは技術記事を対象としているから、純粋に数学や物理、その他趣味や個人的なことを書くには適さない。ポートフォリオとブログが分離するのも微妙だ。適当な静的サイトジェネレータを使ってgithub.ioにでもブログを置くのが良い。</p>
+        <p>Markdownの方言には色々あるが、自分の望む機能を完璧に備えているものはなさそうだった。機能が足りないとなるとHTMLに頼って原始的な方法でスタイルを制御することになる。構文が厳密に与えられていなかったり冗長だったりするのも気に入らない。</p>
+        <p>そういうわけでマークアップ言語を自作するところから始めた。自作といってもMarkdownを基本的には受け継いでいるので方言の範疇かもしれないが、構文を厳密に規定し、冗長な部分を排し、自分が書きやすいように改めた。自分が使うためのものなので全然汎用的ではないと思う。</p>
+        <div class="linkcard"><a class="linkcard-link" href="https://github.com/season1618/notex">
+          <div class="linkcard-text">
+            <h3 class="linkcard-title">GitHub - season1618/notex: Markup Language and Converter for HTML</h3>
+            <p class="linkcard-description">Markup Language and Converter for HTML. Contribute to season1618/notex development by creating an account on GitHub.</p>
+            <img class="linkcard-favicon" src="http://www.google.com/s2/favicons?domain=https://github.com/season1618/notex"><span  class="linkcard-sitename">GitHub</span>
+          </div>
+          <img class="linkcard-image" src="https://opengraph.githubassets.com/44f7d79955e5cd69601591defe2bb8edef0a420d9dd0d8bf3fdbdbd676928c9c/season1618/notex">
+        </a></div>
+        <p>処理系は文書全体を読み込み、タイトルや目次などのメタデータを取り出しつつ、ユーザが用意したテンプレートに埋め込む形でHTMLを生成する。</p>
+        <p>形式構文は以下の通り。</p>
+        <pre><code class="language-plaintext">document = block*
+
+block = header
+      | quote
+      | list
+      | table
+      | image
+      | link-card
+      | math-block
+      | code-block
+      | paragraph
+      | ref
+header = ("# " | "## " | "### " | "#### " | "##### " | "###### ") inline
+quote = &gt;&gt; inline* &lt;&lt;
+list = (("- " | "+ ") inline EOL)*
+table = ("|" ( inline "|" )* EOL)* "-"+ EOL ("|" ( inline "|" )* EOL)*
+image = @[ inline ]( url )
+link-card = @[]( url )
+math-block = $$ .. $$
+code-block = ``` .. ```
+paragraph = inline
+ref = [^]
+
+inline = cite*
+cite = [^ link* ]
+     | link
+link = [ emph* ]( url )
+     | emph
+emph = ** emph* **
+     | __ emph* __
+     | prim
+prim = math = $ .. $
+     | code = ` .. `
+     | text
+</code></pre>
+        <p>Markdownでは順序無しリストの開始記号が複数あったが、NotexではTypstに倣い<code>- </code>を順序無しリスト、<code>+ </code>を順序付きリストとした。Markdownの強調は<code>*</code>または<code>_</code>で囲むと斜体、<code>**</code>または<code>__</code>で囲むとボールド体だったが、Notexでは<code>**</code>で囲むとボールド体、<code>__</code>で囲むと斜体とした。</p>
+        <p>ところで強調や数式・コードなどで開始記号と終了記号が同一だと構文がネストしないことが保証されるので都合が良い。構文の開始記号と終了記号を同一にする利点はネストしないのが示唆されること、欠点は終了記号を忘れたときにエラーとして報告される箇所が大きくずれることだ。インライン要素ならともかく数式・コードブロックの場合、文書最下段までエラーがずれる可能性があるが、実際そこまで困ることはないと思い特に対処はしていない。</p>
+        <p>リンクテキストが空の場合は、URLからHTMLを読んでtitle要素を差し込む。リンクカードも自動で生成するようにした。</p>
+        <p>各要素で注やリンクといった修飾が利用できるかどうかには注意を払った。見出しにも注やリンクは利用できるが、目次として取り出される際は、見出しテキストの内、注は除外されリンクはリンクテキストのみが抽出される。目次中の見出しには対応する本文中の見出しへのリンクが貼られるので、それ以外のリンクは無効になるためだ。</p>
+        <p>注は文書の最後にまとめて表示したいとは限らないため、任意の箇所でリストできるようにした。<code>[^]</code>と書くと、それ以前の注の内まだリストされていないものを全てリストする。また<code>[^]</code>でリストされない注は文書の最後で回収される。</p>
+
+    </div>
+</body>
+</html>
