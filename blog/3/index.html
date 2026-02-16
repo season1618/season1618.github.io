@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <head prefix="og: http://ogp.me/ns#">
+    <meta property="og:url" content="https://season1618.github.io/blog/index"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="エフェクトハンドラによる図形描画 - season1618"/>
+    <meta property="og:image" content="https://season1618.github.io/icon.png"/>
+    <link rel="stylesheet" href="../../index.css">
+    <link rel="stylesheet" href="../blog.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>エフェクトハンドラによる図形描画 - season1618</title>
+</head>
+<body>
+    <header>
+        <a href="../../">About</a> <a href="../../work">Work</a> <a href="../../blog">Blog</a>
+    </header>
+    <div id="content">
+        <p style="text-align: right;">更新 2026.02.16</p>
+        
+        <h1 id="エフェクトハンドラによる図形描画">エフェクトハンドラによる図形描画</h1>
+        <div class="linkcard"><a class="linkcard-link" href="https://github.com/season1618/graph-effect">
+          <div class="linkcard-text">
+            <h3 class="linkcard-title">GitHub - season1618/graph-effect: drawing graphics using effect handlers</h3>
+            <p class="linkcard-description">drawing graphics using effect handlers. Contribute to season1618/graph-effect development by creating an account on GitHub.</p>
+            <img class="linkcard-favicon" src="http://www.google.com/s2/favicons?domain=https://github.com/season1618/graph-effect"><span  class="linkcard-sitename">GitHub</span>
+          </div>
+          <img class="linkcard-image" src="https://opengraph.githubassets.com/05c3fbe05683382129be352114bfd11def043de46542f4fbe20b9e0c87907486/season1618/graph-effect">
+        </a></div>
+        <h2 id="座標変換">座標変換</h2>
+        <p>ディスプレイのピクセルが縦横に並んでいることから最終的な描画命令は直交座標で指定しなければならない。しかしながら、ユーザとしては画面上に勝手な座標系を貼り付けて、その座標系の下で図形を指示したい。Canvas APIなどには<code>translate</code>や<code>rotate</code>といった座標変換を行う関数が用意されているが、これらはキャンバスの状態を変更するため、元の座標系を取り戻すには毎回逆変換を挟むか<code>save</code>/<code>restore</code>でキャンバスの状態を管理する必要がある。したがって座標系を貼り付けるという静的・宣言的な見方にはそぐわない。</p>
+        <p>そこで図形をエフェクト、座標変換をハンドラとして実装する。ここではOCaml5.2を用いる。点・直線・円を描画するエフェクトは</p>
+        <pre><code class="language-ocaml">type _ Effect.t
+  += Point : float * float -&gt; unit t
+   | Line  : (float * float) * float -&gt; unit t (* ((a, b), c) means ax + by = c *)
+   | Circle: (float * float) * float -&gt; unit t
+   | LineSeg :  (float * float) * (float * float) -&gt; unit t
+
+let point (x, y) = perform (Point (x, y))
+let line (a, b) c = perform (Line ((a, b), c))
+let circle (a, b) r = perform (Circle ((a, b), r))
+..
+</code></pre>
+        <p>描画のためのハンドラは</p>
+        <pre><code class="language-ocaml">let render (width, height) body =
+  try_with body ()
+  { effc = fun (type a) (eff: a t) -&gt;
+    match eff with
+    | Point (x, y) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        plot (int_of_float x) (int_of_float y);
+        continue k ())
+    | Line ((a, b), c) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        let (x, y) = (width, height) in
+        let diff_sign a b = a &lt;= 0. && 0. &lt; b || b &lt;= 0. && 0. &lt; a in
+        let (o, p, q, r) = (-. c, a *. x -. c, a *. x +. b *. y -. c, b *. y -. c) in
+        let ps = ref [] in
+        if diff_sign o p then ps := (            c /. a,                 0.) :: !ps;
+        if diff_sign p q then ps := (                 x, (c -. a *. x) /. b) :: !ps;
+        if diff_sign q r then ps := ((c -. b *. y) /. a,                  y) :: !ps;
+        if diff_sign r o then ps := (                0.,             c /. b) :: !ps;
+        (match !ps with
+        | p1 :: p2 :: _ -&gt; draw_poly_line [|cast p1; cast p2|]
+        | _ -&gt; ());
+        continue k ())
+    | Circle (p, r) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        let (x, y) = cast p in
+        draw_circle x y (int_of_float r);
+        continue k ())
+    | LineSeg (p1, p2) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        draw_poly_line [|cast p1; cast p2|];
+        continue k ())
+    | _ -&gt; None
+  }
+</code></pre>
+        <p>となる。</p>
+        <p>座標変換としてまず相似変換(平行移動・回転・拡大縮小)を考える。座標変換はハンドラの中で再びエフェクトを発生させる形になる。例えば平行移動のハンドラは以下のようになる。</p>
+        <pre><code class="language-ocaml">let translate dp =
+  { effc = fun (type a) (eff: a t) -&gt;
+    match eff with
+    | Point (x, y) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        let (x', y') = translate dp (x, y) in
+        continue k (perform (Point (x', y'))))
+    | Line ((a, b), c) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        let (dx, dy) = dp in
+        continue k (perform (Line ((a, b), a *. dx +. b *. dy +. c))))
+    | Circle (p, r) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        continue k (perform (Circle (translate dp p, r))))
+    | LineSeg (p1, p2) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        continue k (perform (LineSeg (translate dp p1, translate dp p2))))
+    | _ -&gt; None
+  }
+</code></pre>
+        <p>回転や拡大縮小についても同様。</p>
+        <p>どのような座標系に置かれているか分かりやすいように</p>
+        <pre><code class="language-ocaml">let handle handler body =
+  fun () -&gt; try_with body () handler
+</code></pre>
+        <p>とおくと、</p>
+        <pre><code class="language-ocaml">render_at_center (width, height) @@
+  handle (rotate (Float.pi /. 4.)) @@
+    handle (scale 200.0)
+      (fun () -&gt;
+        line ( 1.,  0.) 2.;
+        line (-1.,  0.) 2.;
+        line ( 0.,  1.) 2.;
+        line ( 0., -1.) 2.;
+        circle0 0.5;
+        triangle (1., 0.) (-1. /. 2., sqrt 3. /. 2.) (-1. /. 2., -. sqrt 3. /. 2.);
+        rectangle (-1., -1.) (1., 1.)
+      );
+</code></pre>
+        <div class="image">
+          <img src="./example.png">
+          <p class="caption"></p>
+        </div>
+        <p>のように書ける(<code>render_at_center (width, height)</code>は原点をウィンドウ中心に平行移動して描画するハンドラ)。</p>
+        <p>もう少し非自明な変換として<a href="https://ja.wikipedia.org/wiki/%E5%8F%8D%E8%BB%A2%E5%B9%BE%E4%BD%95%E5%AD%A6">反転(inversion)</a>がある。反転とは、平面上の点をある点から見て方向は同じで距離が逆数の位置に写す変換である。反転は円を円に写す(直線は半径無限大の円と見なす)ことが知られており、以下のようにハンドラを定義できる。</p>
+        <pre><code class="language-ocaml">let inversion =
+  { effc = fun (type a) (eff: a t) -&gt;
+    match eff with
+    | Point (x, y) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        let r2 = x ** 2. +. y ** 2. in
+        continue k (perform (Point (x /. r2, y /. r2))))
+    | Line ((a, b), c) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        if c = 0.
+          then continue k (perform (Line ((a, b), c)))
+          else let (a, b) = (a /. (2. *. c), b /. (2. *. c)) in
+               let r = sqrt (a ** 2. +. b ** 2.) in
+               continue k (perform (Circle ((a, b), r))))
+    | Circle ((a, b), r) -&gt; Some (fun (k: (a, _) continuation) -&gt;
+        let d = a ** 2. +. b ** 2. -. r ** 2. in
+        if d = 0.
+          then continue k (perform (Line ((2. *. a, 2. *. b), 1.)))
+          else continue k (perform (Circle ((a /. d, b /. d), r /. Float.abs d))))
+    | _ -&gt; None
+  }
+</code></pre>
+        <p>反転を用いるとシュタイナー円鎖やパップス円鎖などの図形を簡単に描画できる<sup id="cite-1"><a href="#ref-1">[1]</a></sup>。</p>
+        <div class="image">
+          <img src="./steiner-chain.png">
+          <p class="caption">シュタイナー円鎖</p>
+        </div>
+        <div class="image">
+          <img src="./pappus-chain.png">
+          <p class="caption">パップス円鎖</p>
+        </div>
+        <h2 id="フラクタル">フラクタル</h2>
+        <p>再帰的図形を再帰関数によって(解像度の限界を指定することなく)定義したいとする。再帰呼び出しはDFS順に発生するから図形の一部を描画するのに無限の時間がかかり全体の様子を捉えることができない。そこで、関数呼び出しのタイミングでエフェクトを発生させ、ハンドラの方でBFS順つまり解像度の粗い方から順に描画されるようスケジューリングする。</p>
+        <p><code>Call</code>エフェクトを以下のように定義する。</p>
+        <pre><code class="language-ocaml">type _ Effect.t
+  += Call : ('a -&gt; unit -&gt; unit) * 'a -&gt; (unit -&gt; unit) t
+
+let call f arg = perform (Call (f, arg))
+</code></pre>
+        <p>エフェクトが発生したとき、関数呼び出しを行うタスクをキューに追加し、継続には何もしない処理<code>fun () -&gt; ()</code>を渡して再帰せずに処理を続行する(<code>effc</code>)。現状の呼び出しで発生する<code>Call</code>エフェクトが全てハンドルされたところでvalue handlerが呼び出され、キューからタスクを取り出して関数呼び出しを行う(<code>retc</code>)。</p>
+        <pre><code class="language-ocaml">let make_bfs_without_cont () : (unit -&gt; unit) -&gt; unit -&gt; unit =
+  let tasks = Queue.create () in
+  let enqueue task = Queue.push task tasks in
+  let dequeue () = Queue.take_opt tasks in
+  let rec bfs =
+    { retc = (fun () -&gt;
+        match dequeue () with
+        | None -&gt; ()
+        | Some task -&gt; task ()
+        );
+      exnc = ..;
+      effc = fun (type a) (eff : a t) -&gt;
+        match eff with
+        | Call (f, arg) -&gt; Some (fun (k : (a, unit) continuation) -&gt;
+            enqueue (f arg);
+            spawn (fun () -&gt; continue k (fun () -&gt; ())) ()
+            )
+        | _ -&gt; None
+    }
+  and spawn (f : unit -&gt; unit) : unit -&gt; unit = fun () -&gt; match_with f () bfs in
+  spawn
+</code></pre>
+        <p>例えばシェルピンスキーのギャスケットは以下のように各再帰呼び出しで<code>call</code>を挿入すれば良い。</p>
+        <pre><code class="language-ocaml">let rec sierpinski_gasket (a, b, c) () =
+  triangle a b c;
+  let a' = mid b c in
+  let b' = mid c a in
+  let c' = mid a b in
+  call sierpinski_gasket (a , b', c') ();
+  call sierpinski_gasket (a', b , c') ();
+  call sierpinski_gasket (a', b', c ) ()
+</code></pre>
+        <pre><code class="language-ocaml">let run_bfs = make_bfs_without_cont () in
+render_at_center (width, height) @@
+  handle (scale 300.0) @@
+    run_bfs @@
+      sierpinski_gasket ((0., 1.), (sqrt 3. /. 2., -1. /. 2.), (-. sqrt 3. /. 2., -1. /. 2.))
+      ;
+</code></pre>
+        <div class="video">
+          <video controls src="./sierpinski-gasket.mp4"></video>
+          <p class="caption">シェルピンスキーのギャスケット</p>
+        </div>
+        <p>初めに全体像が現れ徐々に細かい部分が描画されていることが分かる。</p>
+        <p>以上の例は自己相似な部分図形を変換せずにそのまま利用していた。部分図形を座標変換した上で組み合わせるには、その部分図形が置かれている座標系(つまりその関数呼び出しの継続)を持っておく必要がある。タスクキューにはタスクと共に継続を追加し、実行するときはその継続の元で実行するよう修正すると以下のようになる<sup id="cite-2"><a href="#ref-2">[2]</a></sup>。</p>
+        <pre><code class="language-ocaml">let make_bfs () : (unit -&gt; unit) -&gt; unit -&gt; unit =
+  let tasks = Queue.create () in
+  let enqueue task = Queue.push task tasks in
+  let dequeue () = Queue.take_opt tasks in
+  let rec bfs =
+    { retc = (fun () -&gt;
+        match dequeue () with
+        | None -&gt; ()
+        | Some (Task (task, k)) -&gt; continue k task
+        );
+      exnc = ..;
+      effc = fun (type a) (eff : a t) -&gt;
+        match eff with
+        | Call (f, arg) -&gt; Some (fun (k : (a, unit) continuation) -&gt;
+            let k' = clone_continuation k in
+            enqueue (Task (f arg, k'));
+            spawn (fun () -&gt; continue k (fun () -&gt; ())) ()
+            )
+        | _ -&gt; None
+    }
+  and spawn (f : unit -&gt; unit) : unit -&gt; unit = fun () -&gt; match_with f () bfs in
+  spawn
+</code></pre>
+        <p>これを用いると<a href="https://ja.wikipedia.org/wiki/%E3%83%94%E3%82%BF%E3%82%B4%E3%83%A9%E3%82%B9%E3%81%AE%E6%9C%A8">ピタゴラスの木</a>は以下のように書ける。</p>
+        <pre><code class="language-ocaml">let rec pythagoras_tree (a, b, c) () =
+  rectangle (-. c /. 2., -. c /. 2.) (c /. 2., c /. 2.);
+  let m = (a +. b) /. 2. in
+  (handle (translate (-. m *. b /. c, m *. a /. c +. c /. 2.)) @@
+    handle (rotate (acos (a /. c))) @@
+      handle (scale (a /. c)) @@
+        call pythagoras_tree (a, b, c)
+  ) ();
+  (handle (translate (m *. a /. c, m *. b /. c +. c /. 2.)) @@
+    handle (rotate (-. acos (b /. c))) @@
+      handle (scale (b /. c)) @@
+        call pythagoras_tree (a, b, c)
+  ) ()
+</code></pre>
+        <pre><code class="language-ocaml">let run_bfs = make_bfs () in
+render_at_center (width, height) @@
+  handle (scale 30.0) @@
+    handle (translate (0.0, -5.0)) @@
+      run_bfs @@
+        (pythagoras_tree (0, 3., 4., 5.))
+        ;
+</code></pre>
+        <div class="video">
+          <video controls src="./pythagoras-tree.mp4"></video>
+          <p class="caption">ピタゴラスの木</p>
+        </div>
+        <div class="ref">
+          <p id="ref-1"><a href="#cite-1">[1]</a> 反転の中心を上手く選ぶと同心円(平行な二直線)に接する同じ大きさの円に変換できる</p>
+          <p id="ref-2"><a href="#cite-2">[2]</a> OCamlの継続はワンショットなので明示的に複製する必要がある。各呼び出しで複製される継続のサイズは再帰の深さに比例するため効率は悪い。</p>
+        </div>
+
+    </div>
+</body>
+</html>
