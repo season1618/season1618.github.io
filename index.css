@@ -30,17 +30,35 @@ header > a {
     text-decoration: none;
 }
 
-#content {
-    width: 60%;
-    margin: 0 auto;
-    padding: 40px 0;
+@media screen and (min-width: 1024px) {
+    #content {
+        width: 60%;
+        margin: 0 auto;
+        padding: 40px 0;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    #content {
+        width: 75%;
+        margin: 0 auto;
+        padding: 40px 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #content {
+        width: 90%;
+        margin: 0 auto;
+        padding: 40px 0;
+    }
 }
 
 h1 {
-    width: max-content;
     margin-left: auto;
     margin-right: auto;
     font-size: 55px;
+    text-align: center;
 }
 
 a {
